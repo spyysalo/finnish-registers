@@ -15,7 +15,7 @@ This assumes that you have the file `annotations-superset.json` in
 
 ### Filtering
 
-To filter out documents with more than one register, run
+To filter out documents with more than one register and ones with rare registers, run
 
     python3 scripts/filterannotations.py data/annotations-superset.json \
         > data/annotations-superset.filtered.json
@@ -26,10 +26,10 @@ To split a held-out test subset of the data, run
 
     python3 scripts/splitannotations.py \        
         data/annotations-superset.filtered.json \
-	data/annotations-train.json \
-	data/annotations-test.json \
-	--ratio 0.8 \
-	--stratify
+        data/annotations-train.json \
+        data/annotations-test.json \
+        --ratio 0.8 \
+        --stratify
 
 ### Statistics
 
@@ -37,6 +37,6 @@ Register distribution
 
     for f in data/annotations-{superset.filtered,train,test}.json ; do
         echo; echo $(basename "$f")
-	python3 scripts/printregisters.py $f \
-	    | cut -f 2 | sort | uniq -c | sort -rn
+        python3 scripts/printregisters.py $f \
+            | cut -f 2 | sort | uniq -c | sort -rn
     done
