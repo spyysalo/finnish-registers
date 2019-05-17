@@ -24,19 +24,36 @@ To filter out documents with more than one register and ones with rare registers
 
 To split a held-out test subset of the data, run
 
-    python3 scripts/splitannotations.py \        
+    python3 scripts/splitannotations.py \
         data/annotations-superset.filtered.json \
-        data/annotations-train.json \
+        data/annotations-train-and-dev.json \
         data/annotations-test.json \
         --ratio 0.8 \
+        --stratify
+
+### Train-dev split
+
+    python3 scripts/splitannotations.py \
+        data/annotations-train-and-dev.json \
+        data/annotations-train.json \
+        data/annotations-dev.json \
+        --ratio 0.875 \
         --stratify
 
 ### Statistics
 
 Register distribution
 
-    for f in data/annotations-{superset.filtered,train,test}.json ; do
+    for f in data/annotations-{superset.filtered,train,dev,test}.json ; do
         echo; echo $(basename "$f")
         python3 scripts/printregisters.py $f \
             | cut -f 2 | sort | uniq -c | sort -rn
+    done
+
+### Store IDs for split
+
+    mkdir split
+    for f in data/annotations-{train,dev,test}.json; do
+        python3 scripts/printregisters.py $f \
+            | cut -f 1 > split/$(basename $f .json)-ids.txt
     done
