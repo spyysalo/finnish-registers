@@ -15,7 +15,7 @@ This assumes that you have the file `annotations-superset.json` in
 
 ### Filtering
 
-To filter out documents with more than one register, run
+To filter out documents with more than one register and ones with rare registers, run
 
     python3 scripts/filterannotations.py data/annotations-superset.json \
         > data/annotations-superset.filtered.json
