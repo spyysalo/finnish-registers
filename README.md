@@ -11,6 +11,8 @@ this won't make any sense to you.
 This assumes that you have the file `annotations-superset.json` in
 `data/`. If you don't have this file, ask Roosa.
 
+Also, parts assume parsed versions of this data.
+
 ## Processing
 
 ### Filtering
@@ -56,4 +58,15 @@ Register distribution
     for f in data/annotations-{train,dev,test}.json; do
         python3 scripts/printregisters.py $f \
             | cut -f 1 > split/$(basename $f .json)-ids.txt
+    done
+
+### Split parsed
+
+    mkdir data/split-parsed
+    for s in train dev test; do
+        o=data/split-parsed/$s
+	mkdir -p "$o"
+	cat split/annotations-${s}-ids.txt | while read i; do
+	    cp data/parsed/${i}.txt.conllu $o
+	done
     done
