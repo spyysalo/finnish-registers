@@ -70,3 +70,9 @@ Register distribution
 	    cp data/parsed/${i}.txt.conllu $o
 	done
     done
+
+### Store ID-label mapping
+
+    for f in data/parsed/*.conllu; do
+        echo $(basename $f .txt.conllu)$'\t'$(egrep '#.*register:' $f | perl -pe 's/.*?register://')
+    done > data/docid-label-map.tsv
