@@ -52,7 +52,8 @@ ENGLISH_MAIN_REGISTER = {
     'TA': 'Spoken',
     'FS': 'Spoken',
     'TV': 'Spoken',
-    'OS': 'Spoken'
+    'OS': 'Spoken',
+    'UC': None,
 }
 
 FINNISH_MAIN_REGISTER = {
@@ -141,9 +142,47 @@ CLASS_ABBREV_MAP = {
     'Informational Description/Explanation': 'D-Informational',
     'Informational Persuasion': 'Info-Persuasion',
     'Narrative': 'Narrative',
+    'Spoken': 'Spoken',
+    'Lyrical': 'Lyrical',
     None: None,
 }
 
+EN_CLASS_MAP = {
+    # None: 'MT/Gen',              # 'Machine-translated / generated texts' [not in English data]
+    'DS': 'D-Sell',                # 'Description with intent to sell'
+    'PB': 'B-Personal',            # 'Personal blog'
+    'DT': 'D-Thing',               # 'Description of a thing'
+    'NE': 'News',                  # 'News reports / News blogs'
+    'HT': 'How-to',                # 'How-to/instructions'
+    'RS': 'Religious',             # 'Religious blogs/sermons'
+    'PO': 'B-Personal-Opinion',    # 'Personal opinion blogs'
+    'DF': 'Forums',                # 'Discussion forums'
+    'RV': 'Reviews',               # 'Reviews'
+    'EN': 'A-Encyclopedia',        # 'Encyclopedia articles'
+    # None: 'B-Community',         # 'Community blogs' [not in English data]
+    'SR': 'Sports',                # 'Sports reports'
+    'OB': 'Editorials',            # 'News+Opinion blogs / Editorials'
+    'DP': 'D-Person',              # 'Description of a person'
+    'IB': 'B-Information',         # 'Information blogs'
+    # None: 'A-Online',            # 'Online article' [not in English data]
+    'RA': 'A-Research',            # 'Research articles'
+    'HA': 'A-Historical',          # 'Historical article'
+    'QA': 'QA-forums',             # 'Question-Answer forums'
+    'AV': 'Advice',                # 'Advice'
+    'TB': 'B-Travel',              # 'Travel blog'
+    'NA': 'Narrative',             # 'Narrative general'
+    'ID': 'Discussion',            # 'Interactive discussion general'
+    'XXX': 'Fiction',              # 'Fiction'
+    'FI': 'FAQs',                  # 'FAQs'
+    # None: 'Legal',               # 'Legal terms / conditions' [not in English data]
+    'IN': 'D-Informational',       # 'Informational Description general'
+    # None: 'Course',              # 'Course materials' [not in English data]
+    'IT': 'Interviews',            # 'Interviews'
+    # None: 'Report',              # 'Report' [not in English data]
+    'FS': 'Speeches',              # 'Formal speeches'
+    'RE': 'Recipes',               # 'Recipes'
+    'IP': 'Info-Persuasion',       # 'Informational Persuasion general'
+}
 
 class Word(object):
     def __init__(self, id_, form, lemma, upos, xpos, feats, head, deprel,
