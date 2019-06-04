@@ -170,16 +170,17 @@ EN_CLASS_MAP = {
     'NE': 'News',                  # 'News reports / News blogs'
     'HT': 'How-to',                # 'How-to/instructions'
     'RS': 'Religious',             # 'Religious blogs/sermons'
-    'PO': 'B-Personal-Opinion',    # 'Personal opinion blogs'
+    'OB': 'B-Personal-Opinion',    # 'Personal opinion blogs'
+    'PO': 'Poems',                 # 'Poems'
     'DF': 'Forums',                # 'Discussion forums'
     'RV': 'Reviews',               # 'Reviews'
     'EN': 'A-Encyclopedia',        # 'Encyclopedia articles'
     # None: 'B-Community',         # 'Community blogs' [not in English data]
     'SR': 'Sports',                # 'Sports reports'
-    'OB': 'Editorials',            # 'News+Opinion blogs / Editorials'
+    'ED': 'Editorials',            # 'News+Opinion blogs / Editorials'
     'DP': 'D-Person',              # 'Description of a person'
     'IB': 'B-Information',         # 'Information blogs'
-    # None: 'A-Online',            # 'Online article' [not in English data]
+    'MA': 'A-Online',              # 'Magazine article'
     'RA': 'A-Research',            # 'Research articles'
     'HA': 'A-Historical',          # 'Historical article'
     'QA': 'QA-forums',             # 'Question-Answer forums'
@@ -187,11 +188,11 @@ EN_CLASS_MAP = {
     'TB': 'B-Travel',              # 'Travel blog'
     'NA': 'Narrative',             # 'Narrative general'
     'ID': 'Discussion',            # 'Interactive discussion general'
-    'XXX': 'Fiction',              # 'Fiction'
+    'SS': 'Fiction',               # 'Short stories'
     'FI': 'FAQs',                  # 'FAQs'
-    # None: 'Legal',               # 'Legal terms / conditions' [not in English data]
+    'LT': 'Legal',                 # 'Legal terms / conditions'
     'IN': 'D-Informational',       # 'Informational Description general'
-    # None: 'Course',              # 'Course materials' [not in English data]
+    'CM': 'Course',                # 'Course materials'
     'IT': 'Interviews',            # 'Interviews'
     # None: 'Report',              # 'Report' [not in English data]
     'FS': 'Speeches',              # 'Formal speeches'
