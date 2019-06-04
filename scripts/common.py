@@ -1,3 +1,18 @@
+import re
+
+from glob import glob
+from logging import error, warning, info
+
+
+EN_ANY_CLASS_COMMENT_RE = re.compile(r'^# \S+\/\d+\+[A-Z]{2}[+_].*')
+
+EN_TARGET_CLASS_COMMENT_RE = re.compile(r'^# \S+\/1\+[A-Z]{2}\+([A-Z]{2})\+.*')
+
+EN_DOCID_COMMENT_RE = re.compile(r'^# <(\d+)>\s*$')
+
+FI_CLASS_COMMENT_RE = re.compile(r'^#.*?\bregister:(.*)')
+
+
 ENGLISH_MAIN_REGISTER = {
     'NE': 'Narrative',
     'SR': 'Narrative',
@@ -205,6 +220,15 @@ class Word(object):
         ])
 
 
+class WordLex(object):
+    """Memory-saving option"""
+    def __init__(self, word):
+        self.id = word.id
+        self.form = word.form
+        self.lemma = word.lemma
+        self.upos = word.upos
+
+
 def load_conllu(fn):
     with open(fn) as f:
         for comments, words in parse_conllu(f):
@@ -223,3 +247,109 @@ def parse_conllu(f):
         else:
             fields = l.split('\t')
             words.append(Word(*fields))
+
+
+def load_conllu_lexonly(fn):
+    with open(fn) as f:
+        for comments, words in parse_conllu(f):
+            words = [WordLex(w) for w in words]
+            yield comments, words
+
+
+def en_is_new_document(comments):
+    class_comments = [c for c in comments if EN_ANY_CLASS_COMMENT_RE.match(c)]
+    docid_comments = [c for c in comments if EN_DOCID_COMMENT_RE.match(c)]
+    if class_comments:
+        if not docid_comments:
+            warning('class but no document id:\n{}'.format('\n'.join(comments)))
+        return True
+    elif docid_comments:
+        warning('document id but no class:\n{}'.format('\n'.join(comments)))
+    return False
+
+
+def en_get_document_id(comments):
+    matches = [c for c in comments if EN_DOCID_COMMENT_RE.match(c)]
+    if not matches:
+        error('No id line found:\n{}'.format('\n'.join(comments)))
+        return None
+    elif len(matches) > 1:
+        warning('Expected one document id line, got {} (using last): {}'.format(
+            len(matches), matches))
+    m = EN_DOCID_COMMENT_RE.match(matches[-1])
+    return m.group(1)
+
+
+def en_get_document_class(comments):
+    """Return document class from comments or None if not found or ambiguous."""
+    doc_id = en_get_document_id(comments)
+    matches = [c for c in comments if EN_ANY_CLASS_COMMENT_RE.match(c)]
+    if not matches:
+        error('No class label line found for {}:\n{}'.format(
+            doc_id, '\n'.join(comments)))
+        return None
+    elif len(matches) > 1:
+        warning('Expected one class label line, got {} for {} (using last): {}'\
+                .format(len(matches), doc_id, matches))
+    m = EN_TARGET_CLASS_COMMENT_RE.match(matches[-1])
+    if not m:
+        info('returning None class for class label line: {}'.format(matches[0]))
+        return None
+    return m.group(1)
+
+
+
+def en_load_parsed_data(fn, exclude_ids=None):
+    if exclude_ids is None:
+        exclude_ids = []
+    sentences, class_, exclude = [], None, False
+    for comments, sentence in load_conllu(fn):
+        if en_is_new_document(comments):
+            if class_ is not None and not exclude:
+                assert sentences
+                yield class_, sentences
+            sentences = []
+            class_ = en_get_document_class(comments)
+            if class_ is not None:
+                class_ = ENGLISH_MAIN_REGISTER[class_]
+            class_ = CLASS_ABBREV_MAP[class_]
+            exclude = en_get_document_id(comments) in exclude_ids
+        sentences.append(sentence)
+    if class_ is not None:
+        assert sentences
+        yield class_, sentences
+
+
+def fi_get_class_from_comments(comments):
+    class_ = None
+    for comment in comments:
+        m = FI_CLASS_COMMENT_RE.match(comment)
+        if m:
+            if class_:
+                raise ValueError('duplicate class')
+            class_ = m.group(1)
+    return class_
+
+
+def fi_load_conllu_with_class(fn):
+    sentences, class_ = [], None
+    for comments, sentence in load_conllu(fn):
+        c = fi_get_class_from_comments(comments)
+        if c is not None:
+            if class_ is not None:
+                raise ValueError('duplicate class')
+            class_ = c
+        sentences.append(sentence)
+    if class_ is None:
+        raise ValueError('missing class in {}'.format(fn))
+    class_ = FINNISH_MAIN_REGISTER[class_]
+    return sentences, CLASS_ABBREV_MAP[class_]
+
+
+def fi_load_parsed_data(dirpath):
+    parses, classes = [], []
+    for fn in glob('{}/*.conllu'.format(dirpath)):
+        sentences, class_ = fi_load_conllu_with_class(fn)
+        if class_ is None:
+            continue    # class doesn't map across languages
+        yield class_, sentences
