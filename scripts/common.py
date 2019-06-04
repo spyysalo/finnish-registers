@@ -73,6 +73,7 @@ ENGLISH_MAIN_REGISTER = {
 
 FINNISH_MAIN_REGISTER = {
     'Narrative general': 'Narrative',
+    'Narrative': 'Narrative',
     'News reports / News blogs': 'Narrative',
     'News reports / news blogs': 'Narrative',    # caps fix
     'Personal blog': 'Narrative',
@@ -81,6 +82,8 @@ FINNISH_MAIN_REGISTER = {
     'Travel blog': 'Narrative',
     'Community blog': 'Narrative',
     'Online article': 'Narrative',
+    'Informational description': 'Informational Description/Explanation',
+    'Informational Description': 'Informational Description/Explanation',
     'Informational Description general': 'Informational Description/Explanation',
     'Description of a thing': 'Informational Description/Explanation',
     'Encyclopedia articles': 'Informational Description/Explanation',
@@ -96,11 +99,13 @@ FINNISH_MAIN_REGISTER = {
     'Personal opinion blogs': 'Opinion',
     'Religious blogs/sermons': 'Opinion',
     'Advice': 'Opinion',
+    'Interactive discussion': 'Interactive discussion',
     'Interactive discussion general': 'Interactive discussion',
     'Discussion forums': 'Interactive discussion',
     'Question-Answer forums': 'Interactive discussion',
     'How-to/instructions': 'How-To/instructions',
     'Recipes': 'How-To/instructions',
+    'Informational persuasion': 'Informational Persuasion',
     'Informational Persuasion general': 'Informational Persuasion',
     'Description with intent to sell':  'Informational Persuasion',
     'News+Opinion blogs / Editorials':'Informational Persuasion',
@@ -111,7 +116,7 @@ FINNISH_MAIN_REGISTER = {
     'TV transcripts': 'Spoken',
     'Sports reports': 'Narrative',
     'Machine-translated / generated texts': None,    # not an English main reg
-    'Community blogs': None,    # not an English main reg
+    'Community blogs': 'Narrative',
 }
 
 CLASS_ABBREV_MAP = {
@@ -343,7 +348,11 @@ def fi_load_conllu_with_class(fn):
         sentences.append(sentence)
     if class_ is None:
         raise ValueError('missing class in {}'.format(fn))
+    if FINNISH_MAIN_REGISTER[class_] is None:
+        warning('mapping class {} to None'.format(class_))
     class_ = FINNISH_MAIN_REGISTER[class_]
+    if CLASS_ABBREV_MAP[class_] is None and class_ is not None:
+        error('missing abbrev for {}'.format(class_))
     return sentences, CLASS_ABBREV_MAP[class_]
 
 
