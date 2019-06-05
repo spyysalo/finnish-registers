@@ -76,7 +76,7 @@ def main(argv):
     for l in labels:
         label_count[l] += 1
     rare_label_ids = []
-    rare_labels = [l for l in label_count if label_count[l] < 10]
+    rare_labels = [l for l in label_count if label_count[l] < 2]
     if any(rare_labels) and args.stratify:
         warning('Stratify with labels with fewer than 2 instances: {}'.format(
             ', '.join(rare_labels)))
