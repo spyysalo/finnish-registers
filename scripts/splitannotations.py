@@ -90,9 +90,6 @@ def main(argv):
         warning('Placing {} documents with rare labels in first set'.format(
             len(rare_label_ids)))
 
-    print(len(ids))
-    print(len(labels))
-
     stratify = labels if args.stratify else None
     ids1, ids2, labels1, labels2 = train_test_split(
         ids, labels, train_size=args.ratio, stratify=stratify)
