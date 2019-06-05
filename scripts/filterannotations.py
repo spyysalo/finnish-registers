@@ -17,6 +17,8 @@ def argparser():
     ap.add_argument('-a', '--ascii', default=False, action='store_true')
     ap.add_argument('-m', '--min-count', default=10, type=int,
                     help='minimum register label count')
+    ap.add_argument('-p', '--pretty', default=False, action='store_true',
+                    help='pretty-print JSON')
     ap.add_argument('file', metavar='JSON', nargs='+', help='annotations')
     return ap
 
@@ -36,6 +38,8 @@ def filter_file(fn, options):
 
     filtered = {}
     for doc_id, doc_data in data.items():
+        if not doc_id.isdigit():
+            warning('non-intenger doc_id: "{}"'.format(doc_id))
         registers = get_registers(doc_data)
         if not registers:
             error('no registers for {}'.format(doc_id))
@@ -71,7 +75,11 @@ def main(argv):
     args = argparser().parse_args(argv[1:])
     for fn in args.file:
         filtered = filter_file(fn, args)
-        print(json.dumps(filtered, ensure_ascii=args.ascii))
+        if not args.pretty:
+            print(json.dumps(filtered, ensure_ascii=args.ascii))
+        else:
+            print(json.dumps(filtered, indent=4, sort_keys=True,
+                             ensure_ascii=args.ascii))
     return 0
 
 
